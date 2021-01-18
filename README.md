@@ -47,7 +47,7 @@ correspond to the error page
     - `chrome\browser\content\browser\aboutNetError.xhtml` contains the HTML
 6. Compresses the uncompressed archive according to [documentation](https://developer.mozilla.org/en-US/docs/Mozilla/About_omni.ja_(formerly_omni.jar))
 7. Copies the original `omni.ja` to `omni.ja.backup`
-    - If the file `omni.ja.backup` already exists it first renames it to `omni.ja.backup.{currentDate}`.
+    - If the file `omni.ja.backup` already exists it first renames it to `omni.ja.backup.{currentDate}`
 8. Copies the patched `omni.ja` file into Firefox directory
 9. ???
 10. Profit
