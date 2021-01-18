@@ -3,7 +3,7 @@
 Who wouldn't want confused Travolta gif in their browser when the page cannot be found? That's right **everyone** wants
 that.
 
-It looks like this:
+Just look at it, it's beautiful:
 
 ![Confused Travolta Meme Screenshot](screenshots/screenshot.png)
 
