@@ -1,0 +1,39 @@
+name: Build Installer
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Install InnoSetup
+        run: choco install -y innosetup
+      - name: Create Installer
+        run: iscc installer.iss
+      - name: Create a Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          body: Please download the `FirefoxTravoltaSetup.exe` installer from assets below
+      - name: Upload Setup
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./FirefoxTravoltaSetup.exe
+          asset_name: FirefoxTravoltaSetup.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
