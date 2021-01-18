@@ -1,7 +1,7 @@
 # Firefox Travolta meme patch
 
-Who wouldn't want confused Travolta gif in their browser when the page cannot be found? That's right **everyone** wants
-that.
+Who wouldn't want confused Travolta gif in their browser when they visit a page that does not exist?
+That's right **everyone** wants that.
 
 Just look at it, it's beautiful:
 
