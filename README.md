@@ -21,7 +21,10 @@ installer and run it. That's how easy it is.
 
 ## Uninstallation
 
-Why would someone uninstall this? Whatever your reason may be, just head to your Firefox installation directory
+Why would someone uninstall this? Whatever your reason may be, just uninstall it like any other app (either go to
+Control Panel or search for `Uninstall Firefox Travolta` in your start menu).
+
+Alternatively you can go to your Firefox installation directory
 (default is `C:\Program Files\Mozilla Firefox`), then open directory `browser` and delete the `omni.ja` file. Afterwards
 rename the file `omni.ja.backup` to `omni.ja`.
 

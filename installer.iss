@@ -12,7 +12,6 @@ OutputDir=.
 OutputBaseFilename=FirefoxTravoltaSetup
 Compression=lzma
 SolidCompression=yes
-Uninstallable=no
 WizardStyle=modern
 
 [Languages]
@@ -26,6 +25,9 @@ Source: ".\bzip2.dll"; DestDir: "{tmp}"; Flags: ignoreversion
 
 [Dirs]
 Name: "{tmp}\omni.ja"
+
+[Icons]
+Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 
 [Code]
 var SelectDirPage: TWizardPage;
@@ -184,4 +186,44 @@ begin
   SelectDirPage.OnNextButtonClick := @CheckValidFirefoxDirectory;
   
   PatchPage := CreateCustomPage(wpInstalling, 'Patching...', 'The setup is currently patching your Firefox.');
+end;
+
+function InitializeUninstall(): Boolean;
+  var FirefoxVersion: String;
+begin
+  MsgBox('Please close Firefox if it is running before pressing OK', mbInformation, MB_OK);
+  if not RegQueryStringValue(GetHKLM, 'Software\Mozilla\Mozilla Firefox', 'CurrentVersion', FirefoxVersion) then
+  begin
+    MsgBox('Firefox does not seem to be installed, nothing to do', mbError, MB_OK);
+    Result := False;
+  end
+  else
+  begin
+    RegQueryStringValue(GetHKLM, 'Software\Mozilla\Mozilla Firefox\' + FirefoxVersion + '\Main', 'Install Directory', FirefoxDir);
+    if not FileExists(FirefoxDir + '\browser\omni.ja.backup') then
+    begin
+      MsgBox('The backup file with original data does not exist, you might need to reinstall Firefox', mbError, MB_OK);
+      Result := False;
+    end
+    else
+      Result := True;
+  end;
+end;
+
+procedure CurUninstallStepChanged(CurrentStep: TUninstallStep);
+begin
+  if CurrentStep = usPostUninstall then
+  begin
+    OmniFile := FirefoxDir + '\browser\omni.ja';
+    if not DeleteFile(OmniFile) then
+    begin
+      MsgBox('Could not delete the patched content, you might need to reinstall Firefox', mbError, MB_OK);
+      Abort();
+    end;
+    if not RenameFile(OmniFile + '.backup', OmniFile) then
+    begin
+      MsgBox('Could not restore the original Firefox data, you might need to reinstall Firefox', mbError, MB_OK);
+      Abort();
+    end;
+  end;
 end;
