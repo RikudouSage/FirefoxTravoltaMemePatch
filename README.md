@@ -17,6 +17,8 @@ day.
 Just had to the [latest release](https://github.com/RikudouSage/FirefoxTravoltaMemePatch/releases/latest), download the
 installer and run it. That's how easy it is.
 
+> After every Firefox update this patch will be undone and needs to be installed again.
+
 ## Uninstallation
 
 Why would someone uninstall this? Whatever your reason may be, just head to your Firefox installation directory
