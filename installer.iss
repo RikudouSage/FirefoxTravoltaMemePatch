@@ -1,5 +1,5 @@
 #define MyAppName "Firefox Travolta"
-#define MyAppVersion "1.1.1"
+#define MyAppVersion "1.1.2"
 #define MyAppPublisher "Dominik Chrástecký"
 
 [Setup]
@@ -191,8 +191,19 @@ end;
 
 function InitializeUninstall(): Boolean;
   var FirefoxVersion: String;
+  var CloseFirefoxSelectedOption: Integer;
 begin
-  MsgBox('Please close Firefox if it is running before pressing OK', mbInformation, MB_OK);
+  repeat
+    if FindWindowByClassName('MozillaWindowClass') <> 0 then
+    begin
+      CloseFirefoxSelectedOption := MsgBox('Please close Firefox before continuing and then press Retry', mbError, MB_ABORTRETRYIGNORE);
+      if CloseFirefoxSelectedOption = IDABORT then
+        Exit;
+    end
+    else
+      Break;
+  until CloseFirefoxSelectedOption <> IDRETRY;
+
   if not RegQueryStringValue(GetHKLM, 'Software\Mozilla\Mozilla Firefox', 'CurrentVersion', FirefoxVersion) then
   begin
     MsgBox('Firefox does not seem to be installed, nothing to do', mbError, MB_OK);
