@@ -1,5 +1,5 @@
 #define MyAppName "Firefox Travolta"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.1.1"
 #define MyAppPublisher "Dominik Chrástecký"
 
 [Setup]
@@ -8,6 +8,7 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 CreateAppDir=no
+DefaultGroupName={#MyAppName}
 OutputDir=.
 OutputBaseFilename=FirefoxTravoltaSetup
 Compression=lzma
