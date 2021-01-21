@@ -39,6 +39,71 @@ var DirectorySelector: TEdit;
 var OmniFile: String;
 var TmpDir: String;
 
+function CompareVersions(Version1: String; Version2: String): Integer;
+  var VersionInternal1: String;
+  var VersionInternal2: String;
+  var Compare1: Longint;
+  var Compare2: Longint;
+begin
+  VersionInternal1 := Version1;
+  VersionInternal2 := Version2;
+
+  if SameStr(Copy(Version1, 1, 1), 'v') then
+    VersionInternal1 := Copy(Version1, 2, 100);
+  if SameStr(Copy(Version2, 1, 1), 'v') then
+    VersionInternal2 := Copy(VersionInternal2, 2, 100);
+
+  if SameStr(VersionInternal1, VersionInternal2) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  Compare1 := StrToInt(Copy(VersionInternal1, 1, 1));
+  Compare2 := StrToInt(Copy(VersionInternal2, 1, 1));
+
+  if Compare1 > Compare2 then
+  begin
+    Result := 1;
+    Exit;
+  end
+  else if Compare1 < Compare2 then
+  begin
+    Result := -1;
+    Exit;
+  end;
+
+  Compare1 := StrToInt(Copy(VersionInternal1, 3, 1));
+  Compare2 := StrToInt(Copy(VersionInternal2, 3, 1));
+
+  if Compare1 > Compare2 then
+  begin
+    Result := 1;
+    Exit;
+  end
+  else if Compare1 < Compare2 then
+  begin
+    Result := -1;
+    Exit;
+  end;
+
+  Compare1 := StrToInt(Copy(VersionInternal1, 5, 1));
+  Compare2 := StrToInt(Copy(VersionInternal2, 5, 1));
+
+  if Compare1 > Compare2 then
+  begin
+    Result := 1;
+    Exit;
+  end
+  else if Compare1 < Compare2 then
+  begin
+    Result := -1;
+    Exit;
+  end;
+
+  Result := 0;
+end;
+
 function GetHKLM: Integer;
 begin
   if IsWin64 then
@@ -181,9 +246,15 @@ begin
 end;
 
 procedure InitializeWizard;
+  var NewVersion: String;
 begin
   TmpDir := ExpandConstant('{tmp}');
 
+  DownloadTemporaryFile('https://github.com/RikudouSage/FirefoxTravoltaMemePatch/releases/latest/download/FirefoxTravoltaSetup.exe', 'newestVersion.exe', '', nil);
+  GetVersionNumbersString(ExpandConstant('{tmp}') + '\newestVersion.exe', NewVersion);
+  if CompareVersions(ExpandConstant('{#MyAppVersion}'), NewVersion) = -1 then
+    MsgBox('TODO', mbInformation, MB_OK);
+  
   SelectDirPage := CreateCustomPage(wpWelcome, 'Select Firefox directory', 'Please select the directory where your Firefox is installed if not detected automatically.');
   SelectDirPage.OnNextButtonClick := @CheckValidFirefoxDirectory;
   
