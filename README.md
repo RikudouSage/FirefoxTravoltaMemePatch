@@ -14,8 +14,9 @@ Afterwards just visit any nonexistent URl (like http://www.nonexistent-url.com) 
 If your immediate reaction was "wow, that's so cool, I want it in my Firefox like yesterday!!!1!1!", today is your lucky
 day.
 
-Just head to the [latest release](https://github.com/RikudouSage/FirefoxTravoltaMemePatch/releases/latest), download the
-installer and run it. That's how easy it is.
+Just
+[download the latest version here](https://github.com/RikudouSage/FirefoxTravoltaMemePatch/releases/latest/download/FirefoxTravoltaSetup.exe)
+and run it. That's how easy it is.
 
 > After every Firefox update this patch will be undone and needs to be installed again.
 
