@@ -7,7 +7,7 @@ Just look at it, it's beautiful:
 
 ![Confused Travolta Meme Screenshot](screenshots/screenshot.png)
 
-Afterwards just visit any nonexistent URl (like http://www.nonexistent-url.com) and be mesmerized by its beauty.
+Afterwards just visit any nonexistent URL (like http://www.nonexistent-url.com) and be mesmerized by its beauty.
 
 ## Installation
 
