@@ -1,6 +1,6 @@
-#define MyAppName "Firefox Travolta"
+﻿#define MyAppName "Firefox Travolta"
 #define MyAppVersion "1.1.3"
-#define MyAppPublisher "Dominik Chr�steck�"
+#define MyAppPublisher "Dominik Chrástecký"
 
 [Setup]
 AppId={{07073C1D-A6FD-4D4F-BDF5-F8A53895EBC0}
@@ -18,6 +18,7 @@ WizardStyle=modern
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
 
 [Files]
 Source: ".\travolta.webp"; DestDir: "{tmp}"; Flags: ignoreversion
@@ -30,6 +31,57 @@ Name: "{tmp}\omni.ja"
 
 [Icons]
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
+
+[CustomMessages]
+english.SelectFirefoxDir=Select Firefox main directory
+english.InvalidDirectory=The directory "%1" does not appear to be a valid Firefox directory
+english.FirefoxUndetected=Firefox could not be detected automatically, make sure you select the correct directory
+english.ChangeDirButton=Change
+english.GenericPatchError=Could not patch your Firefox installation
+english.ProgressCopyingFiles=Copying Firefox files...
+english.ProgressExtracting=Extracting Firefox files...
+english.ProgressCleaningUp=Cleaning up...
+english.ProgressPatching=Patching...
+english.ProgressCompressing=Compressing patched files...
+english.ProgressBackingUp=Backing up unmodified Firefox files...
+english.ErrorBackingUp=Could not create a backup file, if Firefox is running, please close it and run this installation again
+english.ProgressCopyingPatchedFiles=Copying patched files into Firefox directory...
+english.ProgressDone=Done!
+english.MessageDone=Patching successful! If your Firefox was open during the installation, please restart it to see the changes
+english.TitleSelectFirefoxDir=Select Firefox directory
+english.DescriptionSelectFirefoxDir=Please select the directory where your Firefox is installed if not detected automatically.
+english.TitlePatching=Patching...
+english.DescriptionPatching=The setup is currently patching your Firefox.
+english.MessageCloseFirefox=Please close Firefox before continuing and then press Retry
+english.UninstallFirefoxUndetected=Firefox does not seem to be installed, nothing to do
+english.ErrorNoBackup=The backup file with original data does not exist, you might need to reinstall Firefox
+english.ErrorFailedDelete=Could not delete the patched content, you might need to reinstall Firefox
+english.ErrorFailedRestore=Could not restore the original Firefox data, you might need to reinstall Firefox
+
+czech.SelectFirefoxDir=Zvolte složku, kde je nainstalován Firefox
+czech.InvalidDirectory=Složka "%1" nevypadá jako složka, kde je nainstalován Firefox
+czech.FirefoxUndetected=Nezdařilo se automaticky najít složku Firefox, ujistěte se prosím, že zvolíte správnou složku
+czech.ChangeDirButton=Změnit
+czech.GenericPatchError=Nezdařilo se opatchovat váš Firefox
+czech.ProgressCopyingFiles=Kopírování souborů Firefoxu...
+czech.ProgressExtracting=Extrahování souborů Firefoxu...
+czech.ProgressCleaningUp=Uklízení...
+czech.ProgressPatching=Patchování...
+czech.ProgressCompressing=Komprimování opatchovaných souborů...
+czech.ProgressBackingUp=Zálohování původních souborů Firefoxu...
+czech.ErrorBackingUp=Nezdařilo se vytvořit soubor se zálohou, pokud Firefox běží, ukončete jej prosím a znovu spusťte tuto instalaci
+czech.ProgressCopyingPatchedFiles=Kopírování opatchovaných souborů do složky s Firefoxem...
+czech.ProgressDone=Hotovo!
+czech.MessageDone=Patchování proběhlo úspěšně! Pokud jste měli během instalace otevřený Firefox, restartujete jej, aby se projevily změny
+czech.TitleSelectFirefoxDir=Zvolte složku s Firefoxem
+czech.DescriptionSelectFirefoxDir=Prosím zvolte složku, kde máte nainstalován Firefox, pokud nebyla nalezena automaticky.
+czech.TitlePatching=Patchování...
+czech.DescriptionPatching=Instalátor právě patchuje váš Firefox
+czech.MessageCloseFirefox=Před pokračování prosím zavřete Firefox a zvolte možnost Zkusit znovu
+czech.UninstallFirefoxUndetected=Vypadá to, že Firefox není nainstalovaný, není co odinstalovat
+czech.ErrorNoBackup=Záloha s původními soubory neexistuje, nejspíš budete muset přeinstalovat Firefox
+czech.ErrorFailedDelete=Nezdařilo se smazat opatchované soubory, možná budete muset přeinstalovat Firefox
+czech.ErrorFailedRestore=Nezdařilo se obnovit zálohu dat, nejspíš budete muset přeinstalovat Firefox
 
 [Code]
 var SelectDirPage: TWizardPage;
@@ -49,16 +101,19 @@ end;
 
 procedure ChangeDirectoryHandler(Sender: TObject);
 begin
-  BrowseForFolder('Select Firefox main directory', FirefoxDir, False); 
+  BrowseForFolder(ExpandConstant('{cm:SelectFirefoxDir}'), FirefoxDir, False); 
   DirectorySelector.Text := FirefoxDir;
 end;
 
 function CheckValidFirefoxDirectory(Sender: TWizardPage): Boolean;
+  var Message: String;
 begin
   OmniFile := FirefoxDir + '\browser\omni.ja';
   if not FileExists(OmniFile) then
   begin
-    MsgBox('The directory "' + FirefoxDir + '" does not appear to be a valid Firefox directory', mbError, MB_OK);
+    Message := ExpandConstant('{cm:InvalidDirectory}');
+    StringChangeEx(Message, '%1', FirefoxDir, True);
+    MsgBox(Message, mbError, MB_OK);
     Result := False;
   end
   else
@@ -71,7 +126,7 @@ procedure SelectDirPageHandler;
 begin 
   if not RegQueryStringValue(GetHKLM, 'Software\Mozilla\Mozilla Firefox', 'CurrentVersion', FirefoxVersion) then
   begin
-    MsgBox('Firefox does not seem to be installed, make sure you select the correct directory', mbError, MB_OK);
+    MsgBox(ExpandConstant('{cm:FirefoxUndetected}'), mbError, MB_OK);
   end
   else
   begin
@@ -93,7 +148,7 @@ begin
   with ChangeDirButton do
   begin
     Parent := SelectDirPage.Surface;
-    Caption := 'Change';
+    Caption := ExpandConstant('{cm:ChangeDirButton}');
     Left := ScaleX(360);
     Top := ScaleY(0);
     Width := ScaleX(91);
@@ -105,7 +160,7 @@ end;
 
 procedure PatchError;
 begin
-  MsgBox('Could not patch your Firefox installation', mbError, MB_OK);
+  MsgBox(ExpandConstant('{cm:GenericPatchError}'), mbError, MB_OK);
   Abort();
 end;
 
@@ -126,19 +181,19 @@ begin
     HtmlFile := TmpDir + '\omni.ja\chrome\browser\content\browser\aboutNetError.xhtml';
     CssFile := TmpDir + '\omni.ja\chrome\browser\skin\classic\browser\aboutNetError.css';
 
-    ChangePatchDescription('Copying Firefox files...');
+    ChangePatchDescription(ExpandConstant('{cm:ProgressCopyingFiles}'));
     if not FileCopy(OmniFile, OmniZip, False) then
       PatchError();
 
-    ChangePatchDescription('Extracting Firefox files...');
+    ChangePatchDescription(ExpandConstant('{cm:ProgressExtracting}'));
     if not Exec(TmpDir + '\unzip.exe', OmniZip + ' -d omni.ja', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
       PatchError();
 
-    ChangePatchDescription('Cleaning up...');
+    ChangePatchDescription(ExpandConstant('{cm:ProgressCleaningUp}'));
     if not DeleteFile(OmniZip) then
       PatchError();
 
-    ChangePatchDescription('Patching...');
+    ChangePatchDescription(ExpandConstant('{cm:ProgressPatching}'));
     if not LoadStringFromFile(HtmlFile, HtmlContentAnsi) then
       PatchError();
     HtmlContent := String(HtmlContentAnsi);
@@ -151,25 +206,25 @@ begin
     if not SaveStringToFile(CssFile, '#travolta {position:absolute;left:0;right:0;bottom:0;margin:auto;}', True) then
       PatchError();  
 
-    ChangePatchDescription('Compressing patched files...');
+    ChangePatchDescription(ExpandConstant('{cm:ProgressCompressing}'));
     if not Exec(TmpDir + '\zip.exe', '-0DXqr ../omni.zip ./*', TmpDir + '\omni.ja', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
       PatchError();
 
-    ChangePatchDescription('Backing up unmodified Firefox files...');
+    ChangePatchDescription(ExpandConstant('{cm:ProgressBackingUp}'));
     if FileExists(OmniFile + '.backup') and not RenameFile(OmniFile + '.backup', OmniFile + '.backup.' + GetDateTimeString('yyyy-mm-dd_hh-nn-ss', '-', '-')) then
       PatchError();
     if not RenameFile(OmniFile, OmniFile + '.backup') then
     begin
-      MsgBox('Could not create a backup file, if Firefox is running, please close it and run this installation again', mbError, MB_OK);
+      MsgBox(ExpandConstant('{cm:ErrorBackingUp}'), mbError, MB_OK);
       Abort();
     end;
 
-    ChangePatchDescription('Copying patched files into Firefox directory...');
+    ChangePatchDescription(ExpandConstant('{cm:ProgressCopyingPatchedFiles}'));
     if not RenameFile(OmniZip, OmniFile) then
       PatchError();
 
-    ChangePatchDescription('Done!');
-    MsgBox('Patching successful! If your Firefox was open during the installation, please restart it to see the changes', mbInformation, MB_OK); 
+    ChangePatchDescription(ExpandConstant('{cm:ProgressDone}'));
+    MsgBox(ExpandConstant('{cm:MessageDone}'), mbInformation, MB_OK); 
 end;
 
 procedure CurPageChanged(CurrentPageID: Integer);
@@ -184,10 +239,10 @@ procedure InitializeWizard;
 begin
   TmpDir := ExpandConstant('{tmp}');
 
-  SelectDirPage := CreateCustomPage(wpWelcome, 'Select Firefox directory', 'Please select the directory where your Firefox is installed if not detected automatically.');
+  SelectDirPage := CreateCustomPage(wpWelcome, ExpandConstant('{cm:TitleSelectFirefoxDir}'), ExpandConstant('{cm:DescriptionSelectFirefoxDir}'));
   SelectDirPage.OnNextButtonClick := @CheckValidFirefoxDirectory;
   
-  PatchPage := CreateCustomPage(wpInstalling, 'Patching...', 'The setup is currently patching your Firefox.');
+  PatchPage := CreateCustomPage(wpInstalling, ExpandConstant('{cm:TitlePatching}'), ExpandConstant('{cm:DescriptionPatching}'));
 end;
 
 function InitializeUninstall(): Boolean;
@@ -197,7 +252,7 @@ begin
   repeat
     if FindWindowByClassName('MozillaWindowClass') <> 0 then
     begin
-      CloseFirefoxSelectedOption := MsgBox('Please close Firefox before continuing and then press Retry', mbError, MB_ABORTRETRYIGNORE);
+      CloseFirefoxSelectedOption := MsgBox(ExpandConstant('{cm:MessageCloseFirefox}'), mbError, MB_ABORTRETRYIGNORE);
       if CloseFirefoxSelectedOption = IDABORT then
         Exit;
     end
@@ -207,7 +262,7 @@ begin
 
   if not RegQueryStringValue(GetHKLM, 'Software\Mozilla\Mozilla Firefox', 'CurrentVersion', FirefoxVersion) then
   begin
-    MsgBox('Firefox does not seem to be installed, nothing to do', mbError, MB_OK);
+    MsgBox(ExpandConstant('{cm:UninstallFirefoxUndetected}'), mbError, MB_OK);
     Result := False;
   end
   else
@@ -215,7 +270,7 @@ begin
     RegQueryStringValue(GetHKLM, 'Software\Mozilla\Mozilla Firefox\' + FirefoxVersion + '\Main', 'Install Directory', FirefoxDir);
     if not FileExists(FirefoxDir + '\browser\omni.ja.backup') then
     begin
-      MsgBox('The backup file with original data does not exist, you might need to reinstall Firefox', mbError, MB_OK);
+      MsgBox(ExpandConstant('{cm:ErrorNoBackup}'), mbError, MB_OK);
       Result := False;
     end
     else
@@ -230,12 +285,12 @@ begin
     OmniFile := FirefoxDir + '\browser\omni.ja';
     if not DeleteFile(OmniFile) then
     begin
-      MsgBox('Could not delete the patched content, you might need to reinstall Firefox', mbError, MB_OK);
+      MsgBox(ExpandConstant('{cm:ErrorFailedDelete}'), mbError, MB_OK);
       Abort();
     end;
     if not RenameFile(OmniFile + '.backup', OmniFile) then
     begin
-      MsgBox('Could not restore the original Firefox data, you might need to reinstall Firefox', mbError, MB_OK);
+      MsgBox(ExpandConstant('{cm:ErrorFailedRestore}'), mbError, MB_OK);
       Abort();
     end;
   end;
