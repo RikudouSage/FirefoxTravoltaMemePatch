@@ -1,5 +1,5 @@
 ﻿#define MyAppName "Firefox Travolta"
-#define MyAppVersion "1.1.3"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "Dominik Chrástecký"
 
 [Setup]
@@ -178,7 +178,7 @@ procedure PatchPageHandler;
   var CssFile: String;
 begin
     OmniZip := TmpDir + '\omni.zip';
-    HtmlFile := TmpDir + '\omni.ja\chrome\browser\content\browser\aboutNetError.xhtml';
+    HtmlFile := TmpDir + '\omni.ja\chrome\browser\content\browser\certerror\aboutNetError.xhtml';
     CssFile := TmpDir + '\omni.ja\chrome\browser\skin\classic\browser\aboutNetError.css';
 
     ChangePatchDescription(ExpandConstant('{cm:ProgressCopyingFiles}'));
